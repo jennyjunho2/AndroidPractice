@@ -42,7 +42,7 @@
             android:background="@drawable/round_button"
             android:textColor = "#FFFFFF"
             android:textStyle = "bold"
-            android:layout_maringLeft = "25dp"
+            android:layout_marginLeft = "25dp"
             android:enabled = "false"/>
     </LinearLayout>
 </RelativeLayout>

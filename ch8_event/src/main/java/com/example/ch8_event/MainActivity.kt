@@ -2,6 +2,8 @@ package com.example.ch8_event
 
 import android.os.Bundle
 import android.os.SystemClock
+import android.view.KeyEvent
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.ch8_event.databinding.ActivityMainBinding
 
@@ -26,5 +28,36 @@ class MainActivity : AppCompatActivity() {
             binding.resetButton.isEnabled = true
             binding.startButton.isEnabled = false
         }
+
+        binding.stopButton.setOnClickListener{
+            pauseTime = binding.chronometer.base - SystemClock.elapsedRealtime()
+            binding.chronometer.stop()
+            // 버튼 표시 여부 조정
+            binding.stopButton.isEnabled = false
+            binding.resetButton.isEnabled = true
+            binding.startButton.isEnabled = true
+        }
+
+        binding.resetButton.setOnClickListener{
+            pauseTime = 0L
+            binding.chronometer.base = SystemClock.elapsedRealtime()
+            binding.chronometer.stop()
+            binding.stopButton.isEnabled = false
+            binding.resetButton.isEnabled = false
+            binding.startButton.isEnabled = true
+        }
+    }
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?) : Boolean {
+        // 뒤로 가기 버튼을 누를시...
+        if (keyCode === KeyEvent.KEYCODE_BACK){
+            if (System.currentTimeMillis() - initTime > 3000) {
+                Toast.makeText(this, "종료하려면 한 번 더 누르세요!!!",
+                                Toast.LENGTH_SHORT).show()
+                initTime = System.currentTimeMillis()
+                return true
+            }
+        }
+        return super.onKeyDown(keyCode, event)
     }
 }
