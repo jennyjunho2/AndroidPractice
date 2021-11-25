@@ -7,7 +7,7 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "AndroidLab"
-include ':app'
+include ':ApplicationProgramming'
 include ':ch8_event'
 include ':ch9_resource'
 include ':ch10_notification'
