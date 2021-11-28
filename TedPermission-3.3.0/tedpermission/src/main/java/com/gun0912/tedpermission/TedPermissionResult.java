@@ -1,6 +1,7 @@
 package com.gun0912.tedpermission;
 
 import com.gun0912.tedpermission.util.ObjectUtils;
+
 import java.util.List;
 
 public class TedPermissionResult {

@@ -1,18 +1,15 @@
 package com.example.androidlab
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.ImageFormat
 import android.hardware.Sensor
 import android.hardware.SensorManager
 import android.hardware.camera2.*
-import android.media.ExifInterface
 import android.media.ImageReader
-import android.os.Build
-import android.os.Bundle
-import android.os.Handler
-import android.os.HandlerThread
+import android.os.*
 import android.util.DisplayMetrics
 import android.util.Log
 import android.util.SparseIntArray
@@ -25,20 +22,20 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.exifinterface.media.ExifInterface
 import com.example.androidlab.databinding.ActivityCameraBinding
+import splitties.toast.toast
+import java.io.*
 import java.util.*
 import kotlin.concurrent.timer
 
 class SceneActivity : AppCompatActivity() {
-
-    // late initiate variables
     private lateinit var mSurfaceViewHolder: SurfaceHolder
     private lateinit var mImageReader: ImageReader
     private lateinit var mCameraDevice: CameraDevice
     private lateinit var mPreviewBuilder: CaptureRequest.Builder
-    private lateinit var mSession: CameraDevice
+    private lateinit var mSession: CameraCaptureSession
 
-    // handler
     private var mHandler: Handler? = null
 
     private lateinit var mAccelerometer: Sensor
@@ -51,11 +48,17 @@ class SceneActivity : AppCompatActivity() {
 
     var mCameraId = CAMERA_BACK
 
+
+    private var time: Int = 10
+    var timer = Timer()
+
     companion object
     {
         const val CAMERA_BACK = "0"
         const val CAMERA_FRONT = "1"
+
         private val ORIENTATIONS = SparseIntArray()
+
         init {
             ORIENTATIONS.append(ExifInterface.ORIENTATION_NORMAL, 0)
             ORIENTATIONS.append(ExifInterface.ORIENTATION_ROTATE_90, 90)
@@ -63,53 +66,53 @@ class SceneActivity : AppCompatActivity() {
             ORIENTATIONS.append(ExifInterface.ORIENTATION_ROTATE_270, 270)
         }
     }
-    private var time: Int = 10
-    var timer = Timer()
 
+
+    @SuppressLint("MissingSuperCall")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding = ActivityCameraBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        initSensor()
-        initView()
 
-        // 화면 계속 켜지게 유지
+        // 화면 켜짐 유지
         window.setFlags(
             WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
             WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
         )
-        // 타이머 오브젝트
+        //센서 초기화
+        initSensor()
+
+        // 레이아웃 및 뷰 초기화화
+        initView()
         timer(period = 1000, initialDelay = 1000){
             time--
-            if (time == 0){
+            if (time == -1){
 //                startActivity(nextIntent)
                 time = 10
                 cancel()
             }
             runOnUiThread{
-                binding.timer2.text = time.toString()
+                binding.timersecond.text = time.toString()
             }
         }
     }
 
-    // 센서 초기화
     private fun initSensor() {
         mSensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
         mMagnetometer = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD)
     }
 
-    // 초기 surfaceView 구성
     private fun initView() {
-        val cameraView: SurfaceView = findViewById(R.id.cameraView)
-        val btn_convert: ImageButton = findViewById(R.id.btn_convert)
+        val surfaceView = findViewById<SurfaceView>(R.id.surfaceView)
+        val btn_convert = findViewById<ImageButton>(R.id.btn_convert)
         with(DisplayMetrics()){
             windowManager.defaultDisplay.getMetrics(this)
             mHeight = heightPixels
             mWidth = widthPixels
         }
 
-        mSurfaceViewHolder = cameraView.holder
+        mSurfaceViewHolder = surfaceView.holder
         mSurfaceViewHolder.addCallback(object : SurfaceHolder.Callback {
             override fun surfaceCreated(holder: SurfaceHolder) {
                 initCameraAndPreview()
@@ -122,12 +125,14 @@ class SceneActivity : AppCompatActivity() {
             override fun surfaceChanged(
                 holder: SurfaceHolder, format: Int,
                 width: Int, height: Int
-            ) {}
+            ) {
+
+            }
         })
+
         btn_convert.setOnClickListener { switchCamera() }
     }
 
-    // 전면 & 후면 카메라 전환
     private fun switchCamera() {
         when(mCameraId){
             CAMERA_BACK -> {
@@ -167,10 +172,13 @@ class SceneActivity : AppCompatActivity() {
                 ImageFormat.JPEG,
                 7
             )
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
-                return mCameraManager.openCamera(mCameraId, deviceStateCallback, mHandler)
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED
+            ) return
+
+            mCameraManager.openCamera(mCameraId, deviceStateCallback, mHandler)
         } catch (e: CameraAccessException) {
-            Toast.makeText(this@SceneActivity, "카메라를 열지 못했습니다.", Toast.LENGTH_SHORT).show()
+            toast("카메라를 열지 못했습니다.")
         }
     }
 
@@ -190,7 +198,7 @@ class SceneActivity : AppCompatActivity() {
         }
 
         override fun onError(camera: CameraDevice, error: Int) {
-            Toast.makeText(this@SceneActivity, "카메라를 열지 못했습니다.", Toast.LENGTH_SHORT).show()
+            toast("카메라를 열지 못했습니다.")
         }
     }
 
@@ -232,8 +240,13 @@ class SceneActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        mSensorManager.registerListener(deviceOrientation.eventListener, mAccelerometer, SensorManager.SENSOR_DELAY_UI)
-        mSensorManager.registerListener(deviceOrientation.eventListener, mMagnetometer, SensorManager.SENSOR_DELAY_UI)
+
+        mSensorManager.registerListener(
+            deviceOrientation.eventListener, mAccelerometer, SensorManager.SENSOR_DELAY_UI
+        )
+        mSensorManager.registerListener(
+            deviceOrientation.eventListener, mMagnetometer, SensorManager.SENSOR_DELAY_UI
+        )
     }
 
     override fun onPause() {
@@ -254,10 +267,9 @@ class SceneActivity : AppCompatActivity() {
         }
 
     }
-
     private fun updateTextureViewSize(viewWidth: Int, viewHeight: Int) {
+        var surfaceView = findViewById<SurfaceView>(R.id.surfaceView)
         Log.d("ViewSize", "TextureView Width : $viewWidth TextureView Height : $viewHeight")
         surfaceView.layoutParams = FrameLayout.LayoutParams(viewWidth, viewHeight)
     }
-
 }

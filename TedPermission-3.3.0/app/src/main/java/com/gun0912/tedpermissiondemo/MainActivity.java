@@ -10,7 +10,6 @@ import android.view.View.OnClickListener;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.gun0912.tedpermission.TedPermissionUtil;
-import com.gun0912.tedpermission.normal.TedPermission;
 
 import java.util.List;
 
