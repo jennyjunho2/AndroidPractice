@@ -5,26 +5,30 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <SurfaceView
-        android:id="@+id/surfaceView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-    <ImageButton
-        android:id="@+id/btn_convert"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal|bottom"
-        app:srcCompat="@android:drawable/ic_menu_rotate" />
-
     <TextView
         android:id="@+id/timersecond"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
+        android:layout_gravity="center|top"
+        android:layout_marginTop = "25sp"
         android:text="@string/timer2"
-        android:textSize="50sp"
+        android:textSize="100sp"
         android:textColor = "#FF0000"
         android:textStyle = "bold"/>
+
+    <Button
+        android:id="@+id/button_camera"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity = "center|bottom"
+        android:layout_marginBottom="60sp"
+        android:text="Go to Camera"
+        android:textSize = "20sp"/>
+
+    <ImageView
+        android:id = "@+id/imageView"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_gravity="center"/>
 
 </FrameLayout>

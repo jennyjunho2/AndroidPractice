@@ -1,6 +1,7 @@
 package com.example.androidlab
 
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -13,6 +14,7 @@ import com.example.androidlab.databinding.ActivityIntroBinding
 
 class IntroActivity : AppCompatActivity() {
 
+    @SuppressLint("MissingSuperCall")
     override fun onCreate(savedInstanceState: Bundle?) {
         // 레이아웃 바인딩 & 표시
         super.onCreate(savedInstanceState)
@@ -30,7 +32,12 @@ class IntroActivity : AppCompatActivity() {
         // 카메라, 저장공간 권한
         val cameraPermission = ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA)
         val externalStoragePermission = ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
-        if (cameraPermission == PackageManager.PERMISSION_GRANTED && externalStoragePermission == PackageManager.PERMISSION_GRANTED) { // 권한 있는 경우
+        val internetPermission = ContextCompat.checkSelfPermission(this, android.Manifest.permission.INTERNET)
+        val accessNetworkStatePermission = ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_NETWORK_STATE);
+        if (cameraPermission == PackageManager.PERMISSION_GRANTED
+            && externalStoragePermission == PackageManager.PERMISSION_GRANTED
+            && internetPermission == PackageManager.PERMISSION_GRANTED
+            && accessNetworkStatePermission == PackageManager.PERMISSION_GRANTED) { // 권한 있는 경우
             startProcess()
         } else {
             requestPermission()
@@ -43,7 +50,10 @@ class IntroActivity : AppCompatActivity() {
     }
     // 권한 요청 함수
     private fun requestPermission() {
-        ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.CAMERA, android.Manifest.permission.WRITE_EXTERNAL_STORAGE), 99)
+        ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.CAMERA,
+            android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            android.Manifest.permission.INTERNET,
+            android.Manifest.permission.ACCESS_NETWORK_STATE), 99)
     }
     // 요청 이후 함수...
     override fun onRequestPermissionsResult(
