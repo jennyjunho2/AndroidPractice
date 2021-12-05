@@ -102,6 +102,7 @@ class sendPicture {
                         message = dis!!.read() // 83 : success
                         Log.w("1번째 수신", "응답메시지")
                         println(message)
+                        socket!!.close()
                     } catch (e: Exception) {
                         Log.w("error", "error occur")
                     }
