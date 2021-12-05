@@ -97,6 +97,7 @@ class receivePicture {
                     Log.w("버퍼", "버퍼생성 잘못됨")
                 }
                 try {
+                    Log.w("1번째 문자열 발신", "Android_recv")
                     dos!!.writeUTF("Android_recv")
                     dos!!.flush()
                     Log.w("1번째 문자열 수신", "success/fail")
