@@ -16,7 +16,6 @@ import java.nio.charset.Charset
 import java.util.concurrent.TimeUnit
 
 
-
 class sendPictureActivity : AppCompatActivity() {
 
     @SuppressLint("MissingSuperCall")
@@ -37,7 +36,7 @@ class sendPictureActivity : AppCompatActivity() {
         }
         var send = sendPicture()
         send.connect(bitmap2!!)
-        if (send.message == 83){
+        if (send.message == "success"){
             runOnUiThread {
                 Toast.makeText(this@sendPictureActivity, "사진 전송이 성공적으로 완료되었습니다!", Toast.LENGTH_LONG).show()
             }
@@ -55,13 +54,21 @@ class sendPictureActivity : AppCompatActivity() {
 
 class sendPicture {
     private var mHandler: Handler? = null
-        private var dos: DataOutputStream? = null
-        private var dis: DataInputStream? = null
-        var socket: Socket? = null
-        val ip = "221.143.52.30"
-        val port = 9999 //py server
-        private val UTF8_CHARSET = Charset.forName("UTF-8")
-        var message: Int? = null
+    private var dos: DataOutputStream? = null
+    private var dis: DataInputStream? = null
+    var socket: Socket? = null
+    val ip = "221.143.52.30"
+    val port = 9999 //py server
+    private val UTF8_CHARSET = Charset.forName("UTF-8")
+    var message: String? = null
+
+    @Throws(IOException::class)
+    fun readUTF8(`in`: DataInputStream): String {
+        val length = `in`.readInt()
+        val encoded = ByteArray(length)
+        `in`.readFully(encoded, 0, length)
+        return String(encoded, UTF8_CHARSET)
+    }
 
         fun connect(rotatedBitmap: Bitmap) {
             mHandler = Handler()
@@ -99,7 +106,8 @@ class sendPicture {
                         dos!!.write(bytes)
                         dos!!.flush()
                         Log.w("3번째 문자열", "bytearray(이미지)")
-                        message = dis!!.read() // 83 : success
+                        TimeUnit.SECONDS.sleep(1)
+                        message = readUTF8(dis!!)
                         Log.w("1번째 수신", "응답메시지")
                         println(message)
                         socket!!.close()

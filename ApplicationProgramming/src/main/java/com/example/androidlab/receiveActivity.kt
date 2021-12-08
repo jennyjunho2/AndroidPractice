@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.example.androidlab.databinding.ActivityReceivepictureBinding
 import java.io.DataInputStream
@@ -17,7 +18,7 @@ import java.nio.charset.Charset
 import java.util.concurrent.TimeUnit
 
 var received_bitmap : Bitmap? = null
-var successorfail: String? = null
+var successorfail: Int? = null
 
 class receiveActivity: AppCompatActivity() {
 
@@ -30,9 +31,14 @@ class receiveActivity: AppCompatActivity() {
         binding.buttonBackToMain.setOnClickListener { backtomain() }
 
         try{
+//            TimeUnit.SECONDS.sleep(10)
             var receive = receivePicture()
             receive.connect()
             val receivedBitmap = received_bitmap
+            binding.textViewWaiting.visibility = View.INVISIBLE
+            binding.buttonBackToMain.visibility = View.VISIBLE
+            binding.imageViewResult.visibility = View.VISIBLE
+            binding.textViewResult.visibility = View.VISIBLE
             binding.imageViewResult.setImageBitmap(receivedBitmap)
         } catch (e:java.lang.Exception){
             e.printStackTrace()
@@ -56,6 +62,14 @@ class receivePicture {
     private var dis: DataInputStream? = null
     private val UTF8_CHARSET = Charset.forName("UTF-8")
 
+    @JvmName("readUTF81")
+    @Throws(IOException::class)
+    fun readUTF8(`in`: DataInputStream): String {
+        val length = `in`.readInt()
+        val encoded = ByteArray(length)
+        `in`.readFully(encoded, 0, length)
+        return String(encoded, UTF8_CHARSET)
+    }
 
     fun connect() {
         var mHandler = Handler()
@@ -83,6 +97,7 @@ class receivePicture {
             override fun run(){
                 val data_len: Int
                 try {
+                    TimeUnit.SECONDS.sleep(10)
                     socket = Socket(ip, port)
                     Log.w("서버 접속됨", "서버 접속됨")
                 } catch (e1: IOException) {
@@ -90,8 +105,8 @@ class receivePicture {
                     e1.printStackTrace()
                 }
                 try {
-                    val dos = DataOutputStream(socket!!.getOutputStream())
-                    val dis = DataInputStream(socket!!.getInputStream())
+                    dos = DataOutputStream(socket!!.getOutputStream())
+                    dis = DataInputStream(socket!!.getInputStream())
                 } catch (e: IOException) {
                     e.printStackTrace()
                     Log.w("버퍼", "버퍼생성 잘못됨")
@@ -100,13 +115,13 @@ class receivePicture {
                     Log.w("1번째 문자열 발신", "Android_recv")
                     dos!!.writeUTF("Android_recv")
                     dos!!.flush()
-                    Log.w("1번째 문자열 수신", "success/fail")
+                    Log.w("1번째 문자열 수신", "success(48)/fail(49)")
                     TimeUnit.SECONDS.sleep(10)
-                    successorfail = dis!!.readUTF()
+                    successorfail = dis!!.read()
                     Log.w("1번째 문자열 수신 완료", "success/fail")
                     println(successorfail)
                     Log.w("2번째 문자열 수신", "이미지 length")
-                    data_len = dis!!.readInt()
+                    data_len = dis!!.read()
                     println(data_len)
                     Log.w("3번째 문자열 수신", "이미지 bytearray")
                     img_byte = InputStreamToByteArray(data_len, dis!!)
