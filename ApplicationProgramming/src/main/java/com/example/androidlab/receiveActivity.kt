@@ -42,9 +42,13 @@ class receiveActivity: AppCompatActivity() {
             binding.textViewResult.visibility = View.VISIBLE
             binding.imageViewResult.setImageBitmap(receivedBitmap)
             if (successOrFail == 48) {
-                binding.textViewResult.text = "성공!"
+                runOnUiThread{
+                    binding.textViewResult.text = "성공!"
+                }
             } else{
-                binding.textViewResult.text = "실패!"
+                runOnUiThread{
+                    binding.textViewResult.text = "실패!"
+                }
             }
         } catch (e:java.lang.Exception){
             e.printStackTrace()
