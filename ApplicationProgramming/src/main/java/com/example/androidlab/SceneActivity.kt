@@ -23,7 +23,7 @@ import kotlin.concurrent.timer
 class SceneActivity : AppCompatActivity() {
 
     // activity related
-    private var time: Int = 10
+    private var time: Int = 15
     var timer = Timer()
     var mCurrentPhotoPath: String? = null
     companion object {
@@ -32,12 +32,13 @@ class SceneActivity : AppCompatActivity() {
     }
     var bitmap2: Bitmap? = null
 
-
     @SuppressLint("MissingSuperCall")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding = ActivityCameraBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        // 다음 intent 인스턴트트
         val nextIntent = Intent(this@SceneActivity, sendPictureActivity::class.java)
         // 화면 켜짐 유지
         window.setFlags(
@@ -49,7 +50,7 @@ class SceneActivity : AppCompatActivity() {
             time--
             if (time == 0){
                 cancel()
-                time = 10
+                time = 15
                 runOnUiThread {
                     Toast.makeText(this@SceneActivity, "사진을 전송중입니다...", Toast.LENGTH_LONG).show()
                 }

@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.androidlab.databinding.ActivitySendpictureBinding
 import java.io.*
+import java.io.DataInputStream
 import java.net.Socket
 import java.nio.charset.Charset
 import java.util.concurrent.TimeUnit
@@ -36,7 +37,7 @@ class sendPictureActivity : AppCompatActivity() {
         }
         var send = sendPicture()
         send.connect(bitmap2!!)
-        if (send.message == "success"){
+        if (send.message == 83){
             runOnUiThread {
                 Toast.makeText(this@sendPictureActivity, "사진 전송이 성공적으로 완료되었습니다!", Toast.LENGTH_LONG).show()
             }
@@ -57,10 +58,11 @@ class sendPicture {
     private var dos: DataOutputStream? = null
     private var dis: DataInputStream? = null
     var socket: Socket? = null
-    val ip = "221.143.52.30"
+    //val ip = "221.143.52.30"
+    val ip = "172.30.1.25"
     val port = 9999 //py server
     private val UTF8_CHARSET = Charset.forName("UTF-8")
-    var message: String? = null
+    var message: Int? = null
 
     @Throws(IOException::class)
     fun readUTF8(`in`: DataInputStream): String {
@@ -107,7 +109,7 @@ class sendPicture {
                         dos!!.flush()
                         Log.w("3번째 문자열", "bytearray(이미지)")
                         TimeUnit.SECONDS.sleep(1)
-                        message = readUTF8(dis!!)
+                        message = dis!!.read()
                         Log.w("1번째 수신", "응답메시지")
                         println(message)
                         socket!!.close()
@@ -122,11 +124,6 @@ class sendPicture {
             } catch (e: InterruptedException) {
             }
             println("Thread terminated")
-        }
-
-        companion object {
-            var mark: String? = null
-            var shape: String? = null
         }
     }
 

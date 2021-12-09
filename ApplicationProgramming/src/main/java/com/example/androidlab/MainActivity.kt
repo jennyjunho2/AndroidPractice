@@ -25,7 +25,7 @@ class MainActivity : AppCompatActivity() {
         val nextIntent = Intent(this, SceneActivity::class.java)
 
         // 제시어 랜덤 표시
-        var keywords = getResources().getStringArray(R.array.keywords);
+        var keywords = getResources().getStringArray(R.array.keywords)
         binding.keyword.setText(keywords[Random().nextInt(keywords.size)])
 
         // 3초 타이머 오브젝트
@@ -37,7 +37,7 @@ class MainActivity : AppCompatActivity() {
                 time = 3
                 cancel()
             }
-            // 쓰레드 지정(안할 시 디스플레이 오류)
+            // UI 쓰레드 지정(안할 시 디스플레이 오류)
             runOnUiThread{
                 binding.timer1.text = time.toString()
             }
