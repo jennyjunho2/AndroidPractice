@@ -33,7 +33,7 @@ class IntroActivity : AppCompatActivity() {
         val cameraPermission = ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA)
         val externalStoragePermission = ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
         val internetPermission = ContextCompat.checkSelfPermission(this, android.Manifest.permission.INTERNET)
-        val accessNetworkStatePermission = ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_NETWORK_STATE);
+        val accessNetworkStatePermission = ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_NETWORK_STATE)
         if (cameraPermission == PackageManager.PERMISSION_GRANTED
             && externalStoragePermission == PackageManager.PERMISSION_GRANTED
             && internetPermission == PackageManager.PERMISSION_GRANTED

@@ -61,16 +61,7 @@ class sendPicture {
     //val ip = "221.143.52.30"
     val ip = "172.30.1.25"
     val port = 9999 //py server
-    private val UTF8_CHARSET = Charset.forName("UTF-8")
     var message: Int? = null
-
-    @Throws(IOException::class)
-    fun readUTF8(`in`: DataInputStream): String {
-        val length = `in`.readInt()
-        val encoded = ByteArray(length)
-        `in`.readFully(encoded, 0, length)
-        return String(encoded, UTF8_CHARSET)
-    }
 
         fun connect(rotatedBitmap: Bitmap) {
             mHandler = Handler()

@@ -15,9 +15,9 @@
         android:layout_marginTop="75sp"
         android:text="성공!"
         android:textSize="45sp"
+        android:visibility="invisible"
         tools:layout_editor_absoluteX="156dp"
-        tools:layout_editor_absoluteY="122dp"
-        android:visibility="invisible"/>
+        tools:layout_editor_absoluteY="122dp" />
 
     <ImageView
         android:id="@+id/imageViewResult"
@@ -25,31 +25,31 @@
         android:layout_height="250dp"
         android:layout_gravity="center"
         android:layout_marginTop="0sp"
+        android:visibility="invisible"
         tools:layout_editor_absoluteX="71dp"
         tools:layout_editor_absoluteY="236dp"
-        tools:srcCompat="@tools:sample/avatars"
-        android:visibility="invisible"/>
+        tools:srcCompat="@tools:sample/avatars" />
 
     <Button
         android:id="@+id/button_backToMain"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center"
         android:layout_gravity="center|bottom"
         android:layout_marginBottom="40sp"
+        android:gravity="center"
         android:text="Back to Main"
+        android:visibility="invisible"
         tools:layout_editor_absoluteX="123dp"
-        tools:layout_editor_absoluteY="584dp"
-        android:visibility="invisible"/>
+        tools:layout_editor_absoluteY="584dp" />
 
     <TextView
-        android:id = "@+id/textViewWaiting"
+        android:id="@+id/textViewWaiting"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text = "결과를\n수신중입니다..."
-        android:gravity = "center"
         android:layout_gravity="center"
-        android:textSize = "50sp"
-        android:visibility="visible"/>
+        android:gravity="center"
+        android:text="결과를\n수신중입니다..."
+        android:textSize="50sp"
+        android:visibility="visible" />
 </FrameLayout>
 

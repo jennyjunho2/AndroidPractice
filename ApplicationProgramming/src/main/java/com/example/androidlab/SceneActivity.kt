@@ -24,7 +24,6 @@ class SceneActivity : AppCompatActivity() {
 
     // activity related
     private var time: Int = 15
-    var timer = Timer()
     var mCurrentPhotoPath: String? = null
     companion object {
         var ImageCaptureCode = 1
@@ -38,7 +37,7 @@ class SceneActivity : AppCompatActivity() {
         val binding = ActivityCameraBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // 다음 intent 인스턴트트
+        // 다음 intent 인스턴트
         val nextIntent = Intent(this@SceneActivity, sendPictureActivity::class.java)
         // 화면 켜짐 유지
         window.setFlags(
@@ -55,7 +54,7 @@ class SceneActivity : AppCompatActivity() {
                     Toast.makeText(this@SceneActivity, "사진을 전송중입니다...", Toast.LENGTH_LONG).show()
                 }
                 try{
-                    var filename :String = "bitmap.png"
+                    var filename = "bitmap.png"
                     val stream :FileOutputStream = this@SceneActivity.openFileOutput(filename, Context.MODE_PRIVATE)
                     bitmap2?.compress(Bitmap.CompressFormat.PNG, 100, stream)
                     stream.close()
